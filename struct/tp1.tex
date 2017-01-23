@@ -1,9 +1,32 @@
 \subsection{Quelle protections sont mises en place contre les attaques par
 fautes ?}
 
-
 \subsection{Quelles sont les faiblesses de cette sécurité ?}
 
 \subsection{Implémentation de l'attaque par faute}
 
+En utilisant la faiblesse expliquée précedement, notre implémentation
+consiste à introduire une faute de retournement de bits sur le port
+\texttt{in_hi}, sur 8 bits, de la colonne 0. Nous nous basons sur un
+modèle réaliste d'injection de faute où, grâce à un laser, l'attaquant
+pourrait retourner les 8 bits de ce port.\\
+\texttt{
+  in_hi_sig <= in_hi; \\
+  lin_0_in <= in_hi_sig XOR fault_sig;
+} \\
+Le signal \texttt{fault_sig} est remonté jusque dans le fichier top, comme un
+port du composant \texttt{aes_core}, pour pouvoir générer l'attaque.
+Grâce au XOR,
+un bit à 1 dans le signal \texttt{fault_sig} retournera le bit correspondant
+dans le signal \texttt{in_hi} et créera une faute.
+
+% Utilisation du signal fault_sig pour déterminer quels bits
+% seront flippés (avec un XOR)
+% Utilisation du fichier user_logic pour écrire le code de test
+
 \subsection{Embarcation du code}
+
+% Code en C pour contrôler l'IP à travers les registres, processeur MicroBlaze
+% Simulation après synthese sur processeur MicroBlaze non fonctionelle, faute
+% détéctée.
+
