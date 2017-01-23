@@ -1,3 +1,5 @@
+\subsection{Introduction}
+
 \subsection{Quelle protections sont mises en place contre les attaques par fautes?}
 
 Bien que l'algorithme de l'AES soit incassable aujourd'hui, son implémentation peut permettre de récupérer des données sensibles par de nombreux moyens.
@@ -31,7 +33,11 @@ Ainsi, il ne sera plus possible de faire remonter l'erreur. Cela permettrai à l
 
 En utilisant la faiblesse expliquée précedement, notre implémentation
 consiste à introduire une faute de retournement de bits sur le port
-\texttt{in\_hi}, sur 8 bits, de la colonne 0. Nous nous basons sur un
+\texttt{in\_hi}, sur 8 bits, de la colonne 0.
+% TODO expliquer les raisons du choix de in_hi, pourquoi pas avant,
+% TODO pourquoi pas après.
+% TODO inclure les images freeze_in_hi.png et freeze_main_hi.png
+Nous nous basons sur un
 modèle réaliste d'injection de faute où, grâce à un laser, l'attaquant
 pourrait retourner les 8 bits de ce port.\\
 \texttt{in\_hi\_sig <= in\_hi;\\  lin\_0\_in <= in\_hi\_sig XOR fault\_sig;} \\
@@ -56,15 +62,30 @@ nous pouvons vérifier que notre implémentation fonctionne. Si c'est la cas,
 la donnée d'entrée ne doit jamais changer pendant le chiffrement, le signal
 de sortie de \texttt{aes\_core}, \texttt{error}, ne doit jamais passer à 1 et
 la donnée de sortie doit être différente de la donnée attendue. \\
-Nous avons obtenu de tels résultats, voir figure.
-
-
-% Utilisation du signal fault_sig pour déterminer quels bits
-% seront flippés (avec un XOR)
-% Utilisation du fichier user_logic pour écrire le code de test
+Nous avons obtenu de tels résultats (voir figures \ref{modified_start} et
+\ref{modified}) la donnée chiffrée, n'est pas celle attendue, le signal
+\texttt{s_broken} reste toujours à 0 et la donnée en entrée ne change pas. On peut
+aussi voir que le signal modélisant le retournement de bit, \texttt{fault_sig},
+n'est actif que sur 6 cycles.
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[scale=1.0]{result_modified_no_broken_start.png}
+		\caption{Simulation de l'attaque par faute (début)}
+		\label{modified_start}
+	\end{center}
+\end{figure}
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[scale=1.0]{result_modified_no_broken.png}
+		\caption{Simulation de l'attaque par faute}
+		\label{modified}
+	\end{center}
+\end{figure}
 
 \subsection{Embarcation du code}
 
+% image post_synth.png pour fonctionnement normal
+% user_logic.vhd et TestAES.c pour le contrôle
 % Code en C pour contrôler l'IP à travers les registres, processeur MicroBlaze
 % Simulation après synthese sur processeur MicroBlaze non fonctionelle, faute
 % détéctée.
