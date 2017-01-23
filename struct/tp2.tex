@@ -32,13 +32,24 @@ en une description au niveau des transistors, pour pouvoir en extraire une
 consommation électrique simulée. Cette étape est réalisée à l'aide de
 l'environnement Cadence.
 
-INSERER IMAGES 
-
 Une fois cette description générée, nous utilisons le simulateur de consommation
 électrique Synopsis Nanosim pour obtenir les profils de courants selon certains 
 stimulis.
 
-INSERER IMAGES
+\begin{figure}[h]
+\includegraphics{courbe_courant_0.png}
+\caption{ ???????????????????????????? }
+\end{figure}
+
+\begin{figure}[h]
+\includegraphics{courbe_courant_57.png}
+\caption{ ???????????????????????????? }
+\end{figure}
+
+\begin{figure}[h]
+\includegraphics{courbe_courant_255.png}
+\caption{ ???????????????????????????? }
+\end{figure}
 
 Le logiciel d'analyse DPA fourni nous permet de retrouver les clés utilisées.
 Il accepte deux paramètres : l'index du bit attaqué et le chemin vers le
@@ -53,5 +64,21 @@ sélectionne la valeur la plus haute.
 
 \subsection{Résultats}
 
-INSERER IMAGES ET DIRE QUE C'EST BIEN, QU'ON A REUSSI. YOUPI.
-TPCLIC.
+Suite à nos expérimentations nous obtenons les résultats suivants :
+
+\begin{figure}[h]
+\includegraphics{KeyGroup4.png}
+\caption{Résultats de l'attaque DPA sur l'ensemble de données du groupe 4}
+\end{figure}
+
+Pour obtenir la clé qui a le plus de chances d'être la clé réelle, il suffit 
+de prendre celle qui apparait le plus souvent sur les différents lancements
+du programme avec des bits différents.
+
+Par exemple dans le cas de la clé 4A, celle qui est apparait le plus souvent est
+la 58 (0b111010).
+
+\subsection{Conclusion}
+
+TP CLIC, TP QUI MARCHE, TP EASY.
+
