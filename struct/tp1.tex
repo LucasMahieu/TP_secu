@@ -25,8 +25,20 @@ dans le signal \texttt{in_hi} et créera une faute.
 Précisons que nous n'attaquons que la première colonne du DataUnit et que ce
 même signal \texttt{fault_sig} est laissé à \texttt{"00000000"} pour les trois
 autres colonnes. \\
-Nous avons tout d'abord testé cette implémentation en modifiant le code
-VHDL qui instancie notre IP.
+Nous avons tout d'abord testé cette implémentation en modifiant le test bench
+VHDL qui instancie notre IP. Nous avons rajouté un process \texttt{fault},
+qui incrémente un compteur à chaque front montant et qui le remet à zéro à
+chaque début de chiffrement. Après un certain nombre de cycles, nous injectons
+la faute de retournement de bit (signal \texttt{fault_sig} à  \texttt{"11111111"}),
+pendant exactement 6 cycles afin que les deux registres DDR soient affectés par
+l'attaque. \\
+En utilisant les données fournies par la publication 197 du FIPS (Federal Information
+Processing Standard), c'est à dire le texte d'entrée, la clée et le texte chiffré,
+nous pouvons vérifier que notre implémentation fonctionne. Si c'est la cas,
+la donnée d'entrée ne doit jamais changer pendant le chiffrement, le signal
+de sortie de \texttt{aes_core}, \texttt{error}, ne doit jamais passer à 1 et
+la donnée de sortie doit être différente de la donnée attendue. \\
+Nous avons obtenu de tels résultats, voir figure.
 
 
 % Utilisation du signal fault_sig pour déterminer quels bits
