@@ -29,4 +29,47 @@ Ainsi, il ne sera plus possible de faire remonter l'erreur. Cela permettrai à l
 
 \subsection{Implémentation de l'attaque par faute}
 
+En utilisant la faiblesse expliquée précedement, notre implémentation
+consiste à introduire une faute de retournement de bits sur le port
+\texttt{in_hi}, sur 8 bits, de la colonne 0. Nous nous basons sur un
+modèle réaliste d'injection de faute où, grâce à un laser, l'attaquant
+pourrait retourner les 8 bits de ce port.\\
+\texttt{
+  in_hi_sig <= in_hi; \\
+  lin_0_in <= in_hi_sig XOR fault_sig;
+} \\
+Le signal \texttt{fault_sig} est remonté jusque dans le fichier top, comme un
+port du composant \texttt{aes_core}, pour pouvoir générer l'attaque.
+Grâce au XOR,
+un bit à 1 dans le signal \texttt{fault_sig} retournera le bit correspondant
+dans le signal \texttt{in_hi} et créera une faute.
+Précisons que nous n'attaquons que la première colonne du DataUnit et que ce
+même signal \texttt{fault_sig} est laissé à \texttt{"00000000"} pour les trois
+autres colonnes. \\
+Nous avons tout d'abord testé cette implémentation en modifiant le test bench
+VHDL qui instancie notre IP. Nous avons rajouté un process \texttt{fault},
+qui incrémente un compteur à chaque front montant et qui le remet à zéro à
+chaque début de chiffrement. Après un certain nombre de cycles, nous injectons
+la faute de retournement de bit (signal \texttt{fault_sig} à  \texttt{"11111111"}),
+pendant exactement 6 cycles afin que les deux registres DDR soient affectés par
+l'attaque. \\
+En utilisant les données fournies par la publication 197 du FIPS (Federal Information
+Processing Standard), c'est à dire le texte d'entrée, la clée et le texte chiffré,
+nous pouvons vérifier que notre implémentation fonctionne. Si c'est la cas,
+la donnée d'entrée ne doit jamais changer pendant le chiffrement, le signal
+de sortie de \texttt{aes_core}, \texttt{error}, ne doit jamais passer à 1 et
+la donnée de sortie doit être différente de la donnée attendue. \\
+Nous avons obtenu de tels résultats, voir figure.
+
+
+% Utilisation du signal fault_sig pour déterminer quels bits
+% seront flippés (avec un XOR)
+% Utilisation du fichier user_logic pour écrire le code de test
+
 \subsection{Embarcation du code}
+
+% Code en C pour contrôler l'IP à travers les registres, processeur MicroBlaze
+% Simulation après synthese sur processeur MicroBlaze non fonctionelle, faute
+% détéctée.
+
+\subsection{Conclusion}
