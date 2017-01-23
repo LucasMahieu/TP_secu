@@ -1,0 +1,74 @@
+\subsection{Introduction}
+
+Dans cette partie nous allons effectuer une attaque par canaux auxiliaires
+sur un chiffrement AES. Cette attaque s'appelle Differential Power Analysis ou
+DPA, et consiste à étudier la consommation électrique du système visé sur de 
+multiples exécutions et d'en déduire par des procédés statistiques l'information
+visée, ici la clé de chiffrement.
+
+\subsection{Théorie}
+La sécurité d'un système de chiffrement dépend de l'algorithme employé et de 
+son implémentation sur circuit électronique. Dans le cas de la DPA, nous allons 
+utiliser des faiblesses d'implémentations pour en déduire la clé de chiffrement 
+employée. 
+
+La SBox (Substitution Box) est le composant non linéaire principal de l'AES. Il
+s'agit d'une substitution d'octets, cette opération est effectuée juste après
+l'ajout de la clé à la donnée que l'on veut chiffrer. Il est donc possible,
+à partir du résultat de la première itération de l'AES qui ne dépendent que 
+des données d'entrées et de la clé, de retrouver la clé.
+
+La DPA est une attaque par canaux cachés qui utilisent la consommation
+électrique du circuit pour valider ou invalider des hyptohèses sur la clé.
+La consommation d'un circuit logique dépend grandement des données traitées.
+Dans notre cas, il n'y a pas de contre-mesure spécifique utilisée pour
+équilibrer la consommation. Ainsi, nous devrions être capables de réaliser
+une attaque DPA sur la SBox de l'AES.
+
+\subsection{Travail réalisé}
+
+Tout d'abord, nous devons transformer les fichiers VHDL qui nous ont été donnés
+en une description au niveau des transistors, pour pouvoir en extraire une
+consommation électrique simulée. Cette étape est réalisée à l'aide de
+l'environnement Cadence.
+
+Une fois cette description générée, nous utilisons le simulateur de consommation
+électrique Synopsis Nanosim pour obtenir les profils de courants selon certains 
+stimulis.
+
+\begin{figure}[h!]
+    \centering
+    \includepdf[pages={1}]{data/courants.pdf}
+\end{figure}
+
+Le logiciel d'analyse DPA fourni nous permet de retrouver les clés utilisées.
+Il accepte deux paramètres : l'index du bit attaqué et le chemin vers le
+dossier contenant les fichiers de simulation.
+L'outil lit un fichier de configuration contenant une liste des vecteurs qui
+seront utilisés pour la DPA. Ensuite, les données simulées sont collectées à 
+partir des fichiers de simulation. Pour chaque hypothèse de clé, il partitionne
+les traces de simulation de chaque message selon la valeur du bit attaqué.
+Enfin, il évalue les différences entre les moyennes de chaque partition et 
+sélectionne la valeur la plus haute.
+
+
+\subsection{Résultats}
+
+Suite à nos expérimentations nous obtenons les résultats suivants :
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{KeyGroup4}
+\caption{Résultats de l'attaque DPA sur l'ensemble de données du groupe 4}
+\end{figure}
+
+Pour obtenir la clé qui a le plus de chances d'être la clé réelle, il suffit 
+de prendre celle qui apparait le plus souvent sur les différents lancements
+du programme avec des bits différents.
+
+Par exemple dans le cas de la clé 4A, celle qui est apparait le plus souvent est
+la 58 (0b111010).
+
+\subsection{Conclusion}
+
+TP CLIC, TP QUI MARCHE, TP EASY.
+
