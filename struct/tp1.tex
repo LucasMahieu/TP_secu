@@ -22,6 +22,12 @@ port du composant \texttt{aes_core}, pour pouvoir générer l'attaque.
 Grâce au XOR,
 un bit à 1 dans le signal \texttt{fault_sig} retournera le bit correspondant
 dans le signal \texttt{in_hi} et créera une faute.
+Précisons que nous n'attaquons que la première colonne du DataUnit et que ce
+même signal \texttt{fault_sig} est laissé à \texttt{"00000000"} pour les trois
+autres colonnes. \\
+Nous avons tout d'abord testé cette implémentation en modifiant le code
+VHDL qui instancie notre IP.
+
 
 % Utilisation du signal fault_sig pour déterminer quels bits
 % seront flippés (avec un XOR)
@@ -33,3 +39,4 @@ dans le signal \texttt{in_hi} et créera une faute.
 % Simulation après synthese sur processeur MicroBlaze non fonctionelle, faute
 % détéctée.
 
+\subsection{Conclusion}
