@@ -23,7 +23,8 @@ La DPA est une attaque par canaux cachés qui utilisent la consommation
 La consommation d'un circuit logique dépend grandement des données traitées.
 Dans notre cas, il n'y a pas de contre-mesure spécifique utilisée pour
 équilibrer la consommation. Ainsi, nous devrions être capables de réaliser
-une attaque DPA sur la SBox de l'AES.
+une attaque DPA sur la SBox de l'AES. Néanmoins, nous n'attaquerons pas 
+la totalité de la clé mais un seul octet, pour des questions de temps de calcul.
 
 \subsection{Travail réalisé}
 
@@ -36,20 +37,18 @@ Une fois cette description générée, nous utilisons le simulateur de consommat
 électrique Synopsis Nanosim pour obtenir les profils de courants selon certains 
 stimulis.
 
-\begin{figure}[h]
-\includegraphics[width=\textwidth]{courbe_courant_0}
-\caption{ ???????????????????????????? }
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{data/courantsImage}
+    \caption{Traces de courants pour différents stimuli}
+    \label{fig:courants}
 \end{figure}
 
-\begin{figure}[h]
-\includegraphics[width=\textwidth]{courbe_courant_57}
-\caption{ ???????????????????????????? }
-\end{figure}
-
-\begin{figure}[h]
-\includegraphics[width=\textwidth]{courbe_courant_255}
-\caption{ ???????????????????????????? }
-\end{figure}
+La figure~\ref{fig:courants} contient les simulations de courants pour 
+différents stimuli
+(la première image pour 0, la deuxième 57 et la dernière 255) pour une certaine
+clé de chiffrement AES. On remarque de légères différences, qui seront
+exploitées par la DPA.\\
 
 Le logiciel d'analyse DPA fourni nous permet de retrouver les clés utilisées.
 Il accepte deux paramètres : l'index du bit attaqué et le chemin vers le
@@ -64,11 +63,13 @@ sélectionne la valeur la plus haute.
 
 \subsection{Résultats}
 
-Suite à nos expérimentations nous obtenons les résultats suivants :
+Suite à nos expérimentations nous obtenons les résultats suivants visibles
+sur la figure~\ref{fig:resultsDPA}.
 
-\begin{figure}[h]
+\begin{figure}[h!]
 \includegraphics[width=\textwidth]{KeyGroup4}
 \caption{Résultats de l'attaque DPA sur l'ensemble de données du groupe 4}
+\label{fig:resultsDPA}
 \end{figure}
 
 Pour obtenir la clé qui a le plus de chances d'être la clé réelle, il suffit 
@@ -80,5 +81,9 @@ la 58 (0b111010).
 
 \subsection{Conclusion}
 
-TP CLIC, TP QUI MARCHE, TP EASY.
-
+Dans ce TP, nous avons vu comment réaliser une attaque par canaux cachés DPA, et
+obtenir la clé de chiffrement. Pour se protéger de telles attaques, il faut 
+rendre la consommation de de courant insensibles aux données d'entrée afin
+d'équilibrer la consommation de courant, et rendre inutile la DPA qui se base
+sur les différences. Néanmoins, en pratique cela reste très compliqué, car la
+plus légère différence peut être une faiblesse exploitable.
