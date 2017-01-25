@@ -91,21 +91,37 @@ aussi voir que le signal modélisant le retournement de bit, \texttt{fault\_sig}
 n'est actif que sur 6 cycles.
 \begin{figure}[htbp]
 	\begin{center}
-		\includegraphics[width=\textwidth]
-		{result_modified_no_broken_start.png}
+		\includegraphics[scale=0.4]{result_modified_no_broken_start.png}
 		\caption{Simulation de l'attaque par faute (début)}
 		\label{modified_start}
 	\end{center}
 \end{figure}
 \begin{figure}[htbp]
 	\begin{center}
-	\includegraphics[width=\textwidth]{result_modified_no_broken.png}
+	\includegraphics[scale=0.4]{result_modified_no_broken.png}
 	\caption{Simulation de l'attaque par faute}
 	\label{modified}
 	\end{center}
 \end{figure}
 
 \subsection{Embarcation du code}
+Nous avons embarqué notre IP dans un design développé par l'outil Xilinx EDK
+et du code embarqué sur un processeur MicroBlaze. Nous avons tout d'abord testé
+le comportement normal sans faute. Un petit morceau logiciel permet de configurer
+l'IP grâce à différents registres : la clée, le texte et le mode
+choisi (chiffrement/déchiffrement). L'IP repère les fronts montants sur certains
+bits de registres pour charger la clef/lancer le processus. La figure \ref{post}
+nous montre ce fonctionnement normal avec les mêmes données du FIPS. \\
+\begin{figure}[htbp]
+	\begin{center}
+	\includegraphics[scale=0.4]{post_synth.png}
+	\caption{Simulation de l'IP embarquée}
+	\label{post}
+	\end{center}
+\end{figure}
+Pour simuler l'erreur, on utilise le même process VHDL que dans le test bench
+mais dans le fichier \texttt{user\_logic.vhd}. Ce process est aussi déclenché
+avec un front montant sur un bit d'un registre.
 
 % image post_synth.png pour fonctionnement normal
 % user_logic.vhd et TestAES.c pour le contrôle
@@ -114,3 +130,7 @@ n'est actif que sur 6 cycles.
 % détéctée.
 
 \subsection{Conclusion}
+Ce TP était une bonne occasion de découvrir de façon pratique une attaque
+d'un système embarqué, l'attaque par injection de faute.
+Il nous a aussi permis de mieux comprendre le fonctionnement interne de
+l'algorithme AES.
