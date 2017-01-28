@@ -15,10 +15,10 @@ employée.
 La SBox (Substitution Box) est le composant non linéaire principal de l'AES. Il
 s'agit d'une substitution d'octets, cette opération est effectuée juste après
 l'ajout de la clé à la donnée que l'on veut chiffrer. Il est donc possible,
-à partir du résultat de la première itération de l'AES qui ne dépendent que
+à partir du résultat de la première itération de l'AES qui ne dépend que
 des données d'entrées et de la clé, de retrouver la clé.
 
-La DPA est une attaque par canaux cachés qui utilisent la consommation
+La DPA est une attaque par canaux cachés qui utilise la consommation
 électrique du circuit pour valider ou invalider des hyptohèses sur la clé.
 La consommation d'un circuit logique dépend grandement des données traitées.
 Dans notre cas, il n'y a pas de contre-mesure spécifique utilisée pour
@@ -34,18 +34,18 @@ consommation électrique simulée. Cette étape est réalisée à l'aide de
 l'environnement Cadence.
 
 Une fois cette description générée, nous utilisons le simulateur de consommation
-électrique Synopsis Nanosim pour obtenir les profils de courants selon certains
+électrique Synopsis Nanosim pour obtenir les profils de courant selon certains
 stimulis.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{data/courantsImage}
-    \caption{Traces de courants pour différents stimuli}
+    \caption{Traces de courants pour différents stimulis}
     \label{fig:courants}
 \end{figure}
 
 La figure~\ref{fig:courants}~page~\pageref{fig:courants}
- contient les simulations de courants pour différents stimuli
+ contient les simulations de courant pour différents stimulis
 (la première image pour 0, la deuxième 57 et la dernière 255) pour une certaine
 clé de chiffrement AES. On remarque de légères différences, qui seront
 exploitées par la DPA.\\
@@ -85,7 +85,7 @@ la 58 (0b111010).
 
 Dans ce TP, nous avons vu comment réaliser une attaque par canaux cachés DPA, et
 obtenir la clé de chiffrement. Pour se protéger de telles attaques, il faut
-rendre la consommation de de courant insensibles aux données d'entrée afin
+rendre la consommation de courant insensible aux données d'entrées afin
 d'équilibrer la consommation de courant, et rendre inutile la DPA qui se base
 sur les différences. Néanmoins, en pratique cela reste très compliqué, car la
 plus légère différence peut être une faiblesse exploitable.

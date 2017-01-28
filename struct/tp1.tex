@@ -3,38 +3,38 @@ Dans ce premier TP nous allons mettre en évidence qu'avec une protection trop s
 il est relativement simple d'obtenir des informations lors d'un chiffrement de données 
 sensibles.\\
 
-Durant ce TP, le code source d'une IP d'un AES nous est fournie. 
-Celle-ci permet de chiffrer ou déchiffrer un message à partir d'une clés secrete. 
+Durant ce TP, le code source d'une IP d'un AES nous est fourni. 
+Celle-ci permet de chiffrer ou déchiffrer un message à partir d'une clé secrète. 
 Nous allons donc simuler l'injection d'une faute par un laser sur le {\em "chemin"} 
-emprunter par les données lors des multiples rondes de l'AES. Pour rester 
-réaliste, nous feront un {\em bit-flip} 8 bits (1 octet) une et une seule fois.
+emprunté par les données lors des multiples rondes de l'AES. Pour rester 
+réaliste, nous ferons un {\em bit-flip} 8 bits (1 octet) une et une seule fois.
 
-\subsection{Quelle protections sont mises en place contre les attaques par fautes?}
+\subsection{Quelles protections sont mises en place contre les attaques par fautes?}
 
 Bien que l'algorithme de l'AES soit incassable aujourd'hui, son implémentation
 peut permettre de récupérer des données sensibles par de nombreux moyens.
 Dans ce TP, on s'intéresse à une potentielle attaque par injection de fautes et
 à une contre-mesure de cette attaque.
-Pour mener un attaque par faute  dans ce module AES, nous avons tout d'abord
+Pour mener une attaque par faute dans ce module AES, nous avons tout d'abord
 analysé le circuit et tenté de comprendre comment le système était protégé.\\
 
 La sécurité du chiffrement tel qu'il est implémenté pour ce TP réside dans la
 redondance d'information.
-En effet, chaque calcul sur les octets du data\_unit sont fait 2 fois, cela
+En effet, chaque calcul sur les octets du data\_unit est fait 2 fois, cela
 permet, à l'issue des deux calculs, de comparer que les 2 résultats sont
 identiques.
 Dans ce cas, aucune faute ne sera détectée. En revanche, si l'un des deux
 calculs ne donne pas le même résultat, un flag sera levé, et le calcul sera
 considéré comme erroné.\\
 
-De plus, il est possible de doubler le nombre de calculs effectué par round,
-sans pour autant doubler le temps de calculs.
-En effet, d'après la figure~\ref{fig:DDR} page~\pageref{fig:DDR} montre que
-durant les 6 premiers cycles 12 calculs sont effectués (sur fronts montant et
-descendant) et sur les 6 cycles suivants, 
+De plus, il est possible de doubler le nombre de calculs effectués par ronde,
+sans pour autant doubler le temps de calcul.
+En effet, la figure~\ref{fig:DDR} page~\pageref{fig:DDR} montre que
+durant les 6 premiers cycles, 12 calculs sont effectués (sur fronts montants et
+descendants) et sur les 6 cycles suivants, 
 les mêmes calculs sont à nouveau effectués.
-Ainsi si l'assaillant change un octet du circuit, le calcul fait sur les 6
-premiers cycles et celui fait sur les 6 derniers seront surement différents et
+Ainsi si l'assaillant change un octet du circuit, le calcul effectué sur les 6
+premiers cycles et celui effectué sur les 6 derniers seront surement différents et
 une erreur sera levée.
 
 \begin{figure}[!htbp]
@@ -47,14 +47,14 @@ une erreur sera levée.
 
 \subsection{Quelles sont les faiblesses de cette sécurité?}
 
-Le problème avec cette façon de sécurisé l'AES est que si l'on change la valeur
+Le problème avec cette façon de sécuriser l'AES est que si l'on change la valeur
 d'un octet pendant exactement 6 cycles, la valeur du premier calcul sera
 identique au deuxième calcul.
-Ainsi, il ne sera plus possible de faire remonter d'erreur. 
+Ainsi, il ne sera plus possible de faire remonter l'erreur. 
 Pour cela, l'attaquant doit parvenir à changer un octet durant l'un des tours de 
 l'AES de telle sorte que main\_hi = dual\_hi et main\_lo = dual\_lo.
 Si l'injection de la faute dure 6 cycles (temps nécessaire pour calculer
-main\_hi et dual\_hi ainsi que main\_lo et dual\_lo) alors on peut être sûre que 
+main\_hi et dual\_hi ainsi que main\_lo et dual\_lo) alors on peut être sûr que 
 l'attaque sera réussie.
 
 \subsection{Implémentation de l'attaque par faute}
@@ -65,21 +65,21 @@ un schéma (cf. figure~\ref{fig:AES} page~\pageref{fig:AES}).
 \begin{figure}[!h]
 	\begin{center}
 		\includegraphics[scale=0.2]{AES/AES}
-		\caption{Schéma simplifier de l'AES en différent niveaux d'abstractions}
+		\caption{Schéma simplifié de l'AES en différents niveaux d'abstractions}
 		\label{fig:AES}
 	\end{center}
 \end{figure}
 
 En utilisant la faiblesse expliquée précédemment, notre implémentation
 consiste à introduire une faute de retournement de 8 bits sur le signal
-\texttt{in\_hi\_sig} de la colonne 0, juste avant le bloc linear 
+\texttt{in\_hi\_sig} de la colonne 0, juste avant le bloc \texttt{linear}
 (cf. figure~\ref{fig:AES} page~\pageref{fig:AES}).\\
 Pour trouver le signal qui sera notre cible d'attaque nous avons 
-simuler l'IP et modifié certains bits durant un chiffrement de l'AES. 
+simulé l'IP et modifié certains bits durant un chiffrement de l'AES. 
 D'après la figure~\ref{fig:freeze} page~\pageref{fig:freeze} seul le changement 
-de bits sur in\_hi n'a pas levé d'erreurs. En effet, dans ce cas, le main\_hi et le  dual\_hi 
+de bits sur in\_hi n'a pas levé d'erreurs. En effet, dans ce cas, le main\_hi et le dual\_hi 
 sont strictement identiques, ainsi le check\_dual est à 1 et aucune erreur n'est levée. 
-Au contraire, lorsque l'on modifi un bit du main\_hi, le dual\_hi est différent 
+Au contraire, lorsque l'on modifie un bit du main\_hi, le dual\_hi est différent 
 et une erreur sera levée.\\
 
 \begin{figure}[!h]
@@ -87,7 +87,7 @@ et une erreur sera levée.\\
 		\includegraphics[scale=0.3]{freeze_in_hi}
 		\includegraphics[scale=0.3]{freeze_main_hi}
 		\caption{Simulation de bit-flip sur main\_hi et in\_hi. 
-		Seul l'attaque de in\_hi durant 6 cycles ne lève pas d'erreurs.}
+		Seule l'attaque de in\_hi durant 6 cycles ne lève pas d'erreurs.}
 		\label{fig:freeze}
 	\end{center}
 \end{figure}
@@ -140,7 +140,7 @@ le comportement normal sans faute. Un petit morceau logiciel permet de configure
 l'IP grâce à différents registres : la clé, le texte et le mode
 choisi (chiffrement/déchiffrement). L'IP repère les fronts montants sur certains
 bits de registres pour charger la clé/lancer le processus. La figure \ref{post}
-nous montre ce fonctionnement normal avec les mêmes données du FIPS pour une encryption.
+nous montre ce fonctionnement normal avec les mêmes données du FIPS pour un chiffrement.
 
 Pour simuler l'erreur, on utilise le même process VHDL que dans le test bench
 mais dans le fichier \texttt{user\_logic.vhd}. Ce process est aussi déclenché
