@@ -2,3 +2,4 @@
 *.DS_Store
 *.log
 *.fdb_latexmk
+main.synctex.gz
